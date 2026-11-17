@@ -1,0 +1,15 @@
+export const PVP={hp:185,hit:10,duration:180000,waitingDuration:600000,potion:30};
+export const pvpLive=status=>['waiting','active'].includes(status);
+export function pvpError(message,status=400){throw Object.assign(Error(message),{status});}
+export function pvpEvent(s,type,text,now){s.sequence++;s.events.unshift({sequence:s.sequence,type,text,at:now});s.events=s.events.slice(0,14);}
+export function pvpPlayer(profile){return {...profile,hp:PVP.hp,ready:false,answered:0,correct:0,damage:0,healed:0,question:null,feedback:null,deck:[]};}
+export function newPvp(config,now){return {...config,status:'waiting',players:{[config.hostId]:pvpPlayer(config.creator)},createdAt:now,waitingUntil:now+PVP.waitingDuration,endsAt:null,winnerId:null,reason:null,sequence:0,revision:0,events:[],outbox:[],pool:null};}
+export function finishPvp(s,reason,now,winnerId=null){
+ if(!pvpLive(s.status))return;s.status=reason==='cancelled'||reason==='expired'?'cancelled':'finished';s.reason=reason;s.finishedAt=now;s.winnerId=winnerId;
+ pvpEvent(s,'finish',s.status==='cancelled'?'對決已取消。':winnerId?`${s.players[winnerId].name}贏得這場對決！`:'這場對決平手，雙方都很努力！',now);
+ for(const m of Object.values(s.players)){const other=Object.values(s.players).find(p=>p.id!==m.id);s.outbox.push({id:`pvp_${s.code}_${m.id}_result`,kind:'pvpResult',userId:m.id,at:now,summary:{roomCode:s.code,opponent:other?.name||'尚未配對',partner:m.partner,outcome:s.status==='cancelled'?'cancelled':winnerId===null?'draw':winnerId===m.id?'win':'loss',reason,hp:m.hp,opponentHp:other?.hp??null,answered:m.answered,correct:m.correct,damage:m.damage,healed:m.healed,at:now}});}
+}
+export function advancePvp(s,now){if(s.status==='waiting'&&now>=s.waitingUntil){finishPvp(s,'expired',s.waitingUntil);return true;}if(s.status==='active'&&now>=s.endsAt){const players=Object.values(s.players),winner=players[0].hp===players[1].hp?null:players.reduce((a,b)=>a.hp>b.hp?a:b).id;finishPvp(s,'timeout',s.endsAt,winner);return true;}return false;}
+export function startPvp(s,actorId,now){if(s.status!=='waiting')pvpError('對決已開始或已結束。',409);if(actorId!==s.hostId)pvpError('由開房的學生開始對決。',403);const players=Object.values(s.players);if(players.length!==2||players.some(p=>!p.ready))pvpError('請等雙方都按準備完成。',409);s.status='active';s.endsAt=now+PVP.duration;pvpEvent(s,'start','雙方準備完成，3 分鐘對決開始！',now);}
+export function pvpHit(s,id,correct,now){if(s.status!=='active')pvpError('對決已結束或尚未開始。',409);const m=s.players[id],other=Object.values(s.players).find(p=>p.id!==id);m.answered++;if(!correct)return 0;m.correct++;const amount=Math.min(PVP.hit,other.hp);other.hp-=amount;m.damage+=amount;pvpEvent(s,'hit',`${m.name}答對，造成 ${amount} 點傷害`,now);if(other.hp===0)finishPvp(s,'knockout',now,id);return amount;}
+export function pvpHeal(s,id,now){if(s.status!=='active')pvpError('請在進行中的 PVP 使用傷藥。',409);const m=s.players[id],amount=Math.min(PVP.potion,PVP.hp-m.hp);if(amount<=0||m.hp<=0)pvpError('目前無法補血，不消耗傷藥。');m.hp+=amount;m.healed+=amount;pvpEvent(s,'potion',`${m.name}使用傷藥，回復 ${amount} HP`,now);return amount;}

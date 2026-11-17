@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "bankId": "arithmetic-draft",
+  "title": "算術示範（AI 草稿，待教師確認）",
+  "subject": "數學",
+  "timeLimitSeconds": 30,
+  "questions": [
+    {"id":"q001","unit":"加法","stem":"12 + 8 的結果是多少？","options":{"A":"18","B":"20","C":"22","D":"24"},"answer":"B","explanation":"12 加上 8 等於 20。","sourceRef":"此範例自擬，非教材抽取；AI 草稿，待教師確認。","status":"review"},
+    {"id":"q002","unit":"乘法","stem":"7 × 6 的結果是多少？","options":{"A":"36","B":"40","C":"42","D":"48"},"answer":"C","explanation":"7 的 6 倍是 42。","sourceRef":"此範例自擬，非教材抽取；AI 草稿，待教師確認。","status":"review"}
+  ]
+}

@@ -1,0 +1,24 @@
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const project=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const dist=resolve(project,'dist');
+let html=readFileSync(resolve(dist,'index.html'),'utf8').replace(/^\uFEFF/,'');
+const script=html.match(/<script\b[^>]*src="([^"]+)"[^>]*><\/script>/);
+const cssLink=html.match(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/);
+if(!script||!cssLink)throw new Error('找不到建置後的 JS/CSS，請先執行 build。');
+let js=readFileSync(resolve(dist,script[1]),'utf8');
+const css=readFileSync(resolve(dist,cssLink[1]),'utf8');
+const assets=resolve(project,'public/assets');
+const mapping=Object.fromEntries(readdirSync(assets).filter(name=>name.endsWith('.png')).map(name=>[name.slice(0,-4),'data:image/png;base64,'+readFileSync(resolve(assets,name)).toString('base64')]));
+let count=0;
+js=js.replace(/`\.\/assets\/\$\{([\w$]+)\}\.png`/g,(_,id)=>{count++;return `(window.__QUIZSPIRIT_ART__[${id}] || '')`;});
+if(count<1)throw new Error('角色路徑格式已變更，請調整匯出器後重試，不產生缺圖成品。');
+const favicon='data:image/svg+xml;base64,'+readFileSync(resolve(project,'public/favicon.svg')).toString('base64');
+html=html.replace(script[0],'').replace(cssLink[0],'').replace(/<link[^>]*rel="icon"[^>]*>/,'');
+html=html.replace('</head>',`<link rel="icon" href="${favicon}"/><style>${css}</style></head>`);
+html=html.replace('</body>',`<script>window.__QUIZSPIRIT_ART__=${JSON.stringify(mapping)};</script><script>${js.replace(/<\/script/gi,'<\\/script')}</script></body>`);
+const output=resolve(project,'QuizSpirit_題庫切換版.html');
+writeFileSync(output,html);
+console.log(JSON.stringify({output,artwork:Object.keys(mapping).length,bytes:Buffer.byteLength(html)}));

@@ -1,0 +1,50 @@
+{
+  "name": "quizspirit-raid",
+  "main": "server/worker.js",
+  "compatibility_date": "2026-10-20",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "quizspirit-raid-local",
+      "database_id": "00000000-0000-0000-0000-000000000002",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RAIDS",
+        "class_name": "RaidRoom"
+      },
+      {
+        "class_name": "PvpRoom",
+        "name": "PVPS"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "raid-v1",
+      "new_sqlite_classes": [
+        "RaidRoom"
+      ]
+    },
+    {
+      "tag": "pvp-v1",
+      "new_sqlite_classes": [
+        "PvpRoom"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": false
+  }
+}

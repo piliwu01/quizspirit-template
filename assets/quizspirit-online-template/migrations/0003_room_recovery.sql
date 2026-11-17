@@ -1,0 +1,1 @@
+ALTER TABLE raid_rooms ADD COLUMN config TEXT NOT NULL DEFAULT '{}';

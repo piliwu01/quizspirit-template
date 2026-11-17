@@ -1,0 +1,9 @@
+node_modules/
+dist/
+work/
+.wrangler/
+.dev.vars
+.env
+*.local
+__pycache__/
+QuizSpirit_題庫切換版.html
