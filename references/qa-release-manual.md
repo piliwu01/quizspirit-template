@@ -97,3 +97,6 @@ Vercel 出現 Not authorized，先檢查目前身份、scope 與 project linkage
 多人模式另驗隔離登入、並發、重啟及無客戶端連線時的真實截止結算，見 [quizspirit-multiplayer.md](quizspirit-multiplayer.md)。
 
 老師投影與學生雙畫面的事件去重、全班排布、滿版備援及 30／60 人驗證界線，見 [quizspirit-projector-battlefield.md](quizspirit-projector-battlefield.md)。
+
+
+使用者自行部署時的驗證、測試帳號清理與常見版面陷阱，見 [production-verification.md](production-verification.md)。

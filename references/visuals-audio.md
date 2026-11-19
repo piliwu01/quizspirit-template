@@ -48,3 +48,8 @@ AudioContext 在使用者手勢後建立／恢復；初次與重新整理預設�
 若使用者已取消把配件疊在原角色上的做法，不把它重新包裝成換裝完成；先做整體重繪預覽再確認，見 [quizspirit-companion.md](quizspirit-companion.md)。
 
 老師投影可用既有角色整圖位移、發光及獨立攻擊特效；不是角色逐格重繪。雙畫面與樣式衝突的檢查見 [quizspirit-projector-battlefield.md](quizspirit-projector-battlefield.md)。
+
+
+## AI 產圖的檢查
+
+先產 1–4 張讓使用者選風格再量產。逐張看肢體數、誤畫與背景；量產後掃描所有圖片邊緣 alpha，找出半透明底紋並清除。像素風神獸、篇章背景與道具圖的案例見 [quizspirit-shanhai-case.md](quizspirit-shanhai-case.md)。
