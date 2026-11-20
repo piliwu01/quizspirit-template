@@ -47,7 +47,7 @@ description: "將教材或題庫製作為 RPG 複習網站，接續既有遊戲�
 | 網站角色選擇卡片的圖片／名稱／技能／按鈕對齊 | references/qa-release-manual.md 的「網站角色卡片對齊」 |
 | 學生版手機懶人包、說明圖卡、QR Code | references/qa-release-manual.md |
 | 接續墨境討伐，或明確要求以它為參考 | references/ink-realm-example.md |
-| 山海經神獸版、屬性相剋、對戰全螢幕／字體縮放、抽題不重複、山海籤／寶箱／天燈、卡牌交易、英雄榜 | references/quizspirit-shanhai-case.md |
+| 山海經神獸版、屬性相剋、對戰全螢幕／字體縮放、抽題不重複、山海籤／寶箱／天燈、卡牌交易、英雄榜、一頁一畫面、初始夥伴被動、魔王干擾技能 | references/quizspirit-shanhai-case.md |
 | 使用者自行部署後的正式站驗證、測試帳號清理、版面與快取陷阱 | references/production-verification.md |
 
 需要 Word、PDF、簡報或圖片時，遵循當次可用的對應技能或文件類型。不要假定某個工具、帳號、CLI 版本或技能已安裝；先確認可用性。缺少輔助工具時，說明限制並用替代方式，不為此無限卡住。

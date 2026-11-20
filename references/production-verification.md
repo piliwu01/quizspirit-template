@@ -10,6 +10,9 @@
 ## 正式站驗證做法
 
 - 用 Cloudflare 連接器直接在 D1 插入臨時帳號（帳號前綴固定，如 `zztest-`；密碼雜湊事先產生；`must_change=0`），再插入一筆 progress（已選夥伴的新狀態）。放在真實班級才能測到題庫與同班功能；放在沒有題庫的班級會拿到備援數學題。
+- D1 `users` 欄位是 `password`（不是 password_hash），`created_at` 為毫秒數字。progress 的 data 用 `shared/game.js` 的 `freshState()` 產生，再把 `growth.starter`、`captured`、`selected` 填好；沒有 progress 會出現「找不到養成進度」。
+- 要測老師功能（開討伐房、投影畫面）時，另建 `zztest-t1`（`role='teacher'`）臨時老師帳號，不要索取使用者的老師密碼；清理時一併刪除。
+- 快速確認新版已上線：在頁面內抓 `/` 的 HTML 找出 `assets/index-*.js`，fetch 後檢查新功能的字串／class 是否存在。
 - 在內建瀏覽器的頁面內用 `fetch('/api/login')` 登入，再 reload 進入畫面；需要特定畫面尺寸時用 resize_window，測完重設為 desktop。
 - 用頁面內 JS 量測（`getBoundingClientRect` 是否重疊、`scrollHeight` 是否等於視窗高、computed font-size），比截圖可靠。隱藏的瀏覽器面板截圖常是舊畫面或動畫凍結的畫面；有疑慮就再截一次或讀 DOM。
 - 需要「答對」的情境：題目答案不會送到前端，就逐一試選項直到出現「答對了」，記錄前後血量。
