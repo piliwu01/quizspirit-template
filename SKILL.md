@@ -49,6 +49,7 @@ description: "將教材或題庫製作為 RPG 複習網站，接續既有遊戲�
 | 接續墨境討伐，或明確要求以它為參考 | references/ink-realm-example.md |
 | 山海經神獸版、屬性相剋、對戰全螢幕／字體縮放、抽題不重複、山海籤／寶箱／天燈、卡牌交易、英雄榜、一頁一畫面、初始夥伴被動、魔王干擾技能 | references/quizspirit-shanhai-case.md |
 | 使用者自行部署後的正式站驗證、測試帳號清理、版面與快取陷阱 | references/production-verification.md |
+| 破盾蓄力、隱藏弱點、潛力爆發、狀態圖示、討伐魔王護盾／時間軸／戰績榜、一鍵加入下一場、打亂選項防背答案 | references/quizspirit-battle-polish.md |
 | 天賦樹與未點提醒、沒選到的主角之後加入（同行夥伴）、學生 AI 學習健檢（限定真實玩法）、老師端全班弱點總覽與 AI 教學建議、清除全部遊玩紀錄（先備份） | references/quizspirit-growth-teacher-tools.md |
 
 需要 Word、PDF、簡報或圖片時，遵循當次可用的對應技能或文件類型。不要假定某個工具、帳號、CLI 版本或技能已安裝；先確認可用性。缺少輔助工具時，說明限制並用替代方式，不為此無限卡住。
