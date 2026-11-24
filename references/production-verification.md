@@ -22,6 +22,7 @@
 ## 清理（每次驗證後都要做）
 
 依外鍵順序刪除：交易、sessions、operations、討伐／PVP 成員與房間、activity_locks、progress、AI 用量、英雄榜獎勵 → 最後刪 `users WHERE username LIKE 'zztest-%'`。刪完查詢總帳號數，與原本數量比對後回報。
+若測過 AI 功能，另刪 `ai_cache` 中以測試帳號或測試班級為 key 的快取（例：`study:zztest-%`、`classweak:zztest:%`）。
 
 ## 常見陷阱
 
