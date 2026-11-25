@@ -16,6 +16,9 @@
 - **潛力爆發**：被反擊扣血 +35、破盾 +50，滿 100 可按「覺醒」：該題 ×3、答錯不反擊、不用靈氣，發動即歸零；收服不能覺醒。
 - **演出**：破盾／覺醒斜長條切入特寫（3 秒，減少動態 1.5 秒）；勝利結算數字跳動（答對、XP、最高連擊、破盾、食物、玉符、寶箱）。
 - **狀態圖示**：對手（破盾 1 題、灼燒 N 回、暴走、虛弱）、夥伴（覺醒、蓄力、玄甲 N 次、連擊 N）。綠框有利、紅框警示，title 說明。
+- **蓄力＝多段攻擊（2026-11-24，只限單人冒險）**：投入 N 點靈氣＝打 1+N 下；答對弱點題型時護盾扣 `min(剩餘, 1+N)` 格（`resolveBreak` 回傳 `hits`），投入 3 點可一次破盾；倍率 ×1.5／2／2.5 不變，答錯或非弱點不扣盾。提示文字「2 連擊 ×1.5」，戰鬥紀錄「弱點 3 連擊！護盾 −3」。討伐、PVP 不動。
+  - 演出：夥伴腳下光環（1 藍、2 紫、3 金＋旋轉圈、覺醒粉紅，`boost-aura boost-N`）；命中 N 個衝擊環錯開＋「N 連擊！」；護盾格逐格 `shatter`（用 useRef 記上一次護盾數）；投入 3 點答對且沒破盾才播金色「靈氣全開！」特寫（破盾／覺醒優先用原特寫）；減少動態全部關閉。
+  - 來源：老師貼遊戲影片問「哪些能融入」→ 先列 4 個點子（含規則與成本），老師回「做 1 和 4」才動手。
 
 ## 共同討伐
 
@@ -47,3 +50,13 @@
 - 模擬多人：node 腳本用臨時 `zztest-` 帳號建房、加入、作答（可讀本機題庫 JSON 取得正解）；前端驅動作答可用「題幹雜湊→答案」小表放 localStorage，測完刪除。不要把測試檔放進會發布的 `public/`。
 - 每次 build 後重啟本機預覽伺服器；模擬視窗大小改變後若版面數字怪異，重新整理再量。
 - 測試帳號建立與清理依 production-verification.md 的順序，結束回報剩餘 0 個；正式站只做 curl 檢查，不在真實學生帳號上測。
+
+## 右側瀏覽器面板卡住時的本機實測（2026-11-25）
+
+- 症狀：面板隱藏或 navigate 逾時 300 秒、javascript_tool 回「page still loading／Policy check temporarily unavailable」，開新分頁也一樣。先請老師把面板打開；仍卡就改用無頭 Chrome，不要一直重試。
+- Playwright：用 npx 快取裡現成的套件（`createRequire` 指到 `npm-cache/_npx/<hash>/node_modules/`），`chromium.launch({channel:'chrome'})` 用系統 Chrome（快取的 Playwright 瀏覽器版本常對不上）。不另外下載。
+- 開著 `wrangler dev` 時，`wrangler d1 execute --local` 會失敗（Failed to get session commit token）：改用 Node 內建 `node:sqlite` 直接開 `.wrangler/state/v3/d1/miniflare-D1DatabaseObject/<hash>.sqlite`，`new DatabaseSync(path,{timeout:10000})` 避免 database is locked。
+- 造情境：`/battle/start` 每次都新開一場，重新整理也不會接續 → 開戰後再改資料庫（orbs=3、`revealed=weak`、cards 題型全設成弱點、hp 拉回 500 免得打死）。前端的靈氣數只在下一次作答回傳時更新，所以先「投入 0 答一題」當引子，再改 cards、投入 N 點測。正解從資料庫 `pending.answer` 對 `pending.options` 找索引。
+- 冒險奇遇會隨機跳出擋住點擊：`page.addLocatorHandler(page.locator('.encounter-overlay'), …)` 自動按「略過」。
+- 390 寬量到戰場內元素 x 為負：是 Playwright `click()` 先 scrollIntoView，把 overflow:hidden 的戰場（背景 SVG 本來就比戰場寬）捲動了；改用 `page.mouse.click(座標)` 模擬手指就正常。回報時說清楚是測試工具造成、不是版面問題。
+- 特效用每 150ms 輪詢記下「出現過的最大值」（衝擊環數、連擊字樣、碎裂格數、特寫 class），比截圖可靠。

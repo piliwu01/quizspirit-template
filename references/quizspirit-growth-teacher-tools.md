@@ -65,6 +65,8 @@
 - 清理腳本除了 CLAUDE.md 列的表，還要刪 `ai_cache` 中 `study:zztest-%`、`classweak:zztest:%`。
 - 打開學習報告時畫面會預設查某班（真實學生），只讀不寫，回報時說明「沒有改到學生資料」。
 - 測試用的 requestId 要是 UUID 格式，否則伺服器回「操作識別無效」。
+- 正式站測規則（不開畫面）：Node 腳本用 zztest 帳號 `fetch` 登入（存 cookie）→ `/battle/start` → `wrangler d1 execute --remote` 用 `json_set` 調整該帳號 battle（如 orbs、cards[0].category）→ `/question` → 遠端讀 `pending.answer` → `/answer`，檢查 event 數值。正式站沒有本機鎖檔問題。
+- 部署後核對靜態圖：逐張 `curl` 正式網址（加 `?v=亂數` 避快取）算 sha1，和 `public/` 檔案比對。
 - bash 的 `printf` 遇到中文內容裡的 `%` 會中斷（README 寫到一半）；附加含 `%` 的文字改用 heredoc `cat >> file <<'EOF'`。
 
 ## 清除全部遊玩紀錄
@@ -73,3 +75,4 @@
 - 動手前一定先備份：`wrangler d1 export --remote --no-schema --table progress --table operations …` 存到 `work/`（已在 .gitignore，不會上傳），檔名用台北時間（Git Bash 的 `TZ=` 不一定生效，自己換算）。
 - 重設：`UPDATE progress SET data=<freshState()>`，並清 operations、state_guards、world_*、hero_*、ai_cache、ai_usage、trades、raid／pvp 房間與成員、activity_locks、sessions（大家要重新登入）。不動 users、banks、art_images、login_limits。
 - 事後查「有進度的帳號＝0」，再用 zztest 帳號確認登入、讀進度、本週山海魔王會自動重生，清理後回報總帳號數與備份檔位置。
+- 實際執行（2026-11-25）：盤點時順便列每班「玩過的人數」（starter 不為 null 或 xp>0），學生都沒玩過時在選項說明寫出來；備份 5 張有資料的表共 148 筆。`/world/view` 是 POST（GET 會 404「找不到此功能」）。測試帳號用 zztest 班，魔王會為該班產生、清理時一起刪，不會替真實班級先產生魔王。
